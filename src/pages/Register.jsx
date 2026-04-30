@@ -29,21 +29,29 @@ export default function Register() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  e.preventDefault();
+  setLoading(true);
+  setError('');
 
-    try {
-      const response = await api.post('/auth/register', formData);
-      login(response.data.user, response.data.token);
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const payload = {
+      name: `${formData.firstName} ${formData.lastName}`, // ✅ FIX
+      email: formData.email,
+      password: formData.password,
+      phone: formData.phone,
+      referrerCode: formData.referrerCode
+    };
 
+    const response = await api.post('/auth/register', payload);
+
+    login(response.data.user, response.data.token);
+    navigate('/dashboard');
+  } catch (err) {
+    setError(err.response?.data?.message || 'Registration failed');
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="auth-container">
       <div className="auth-card">
